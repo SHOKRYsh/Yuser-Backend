@@ -10,10 +10,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Activitylog\Traits\CausesActivity;
+
 
 class User extends Authenticatable implements \Illuminate\Contracts\Auth\Access\Authorizable
 {
-    use HasApiTokens, HasRoles, HasPermissions, HasFactory, Notifiable, SoftDeletes, ArchiveTrait;
+    use HasApiTokens, HasRoles, HasPermissions, HasFactory, Notifiable, SoftDeletes, ArchiveTrait, CausesActivity;
 
     protected $guard_name = 'web';
     protected $fillable = [

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Modules\Auth\Models\User;
+use Spatie\Activitylog\Models\Activity;
 
 class UserController extends Controller
 {
@@ -74,5 +75,14 @@ class UserController extends Controller
 
         $user->delete();
         return $this->respondOk(null, 'User deleted successfully');
+    }
+
+    public function getUserActivities($userId)
+    {
+        $activities = Activity::where('causer_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->paginate();
+
+        return $this->respondOk($activities);
     }
 }

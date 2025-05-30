@@ -5,6 +5,7 @@ namespace Modules\Auth\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\RegisterRequest;
 use Modules\Auth\Models\User;
@@ -42,9 +43,10 @@ class AuthController extends Controller
         $user = $this->authService->login($data);
         if($user)
         {
+            activity()->causedBy($user['user'])->useLog('auth')->log('User logged in'); 
             return $this->respondOk($user,'User logged in successfully');
         }
-        else
+        else    
         {
             return $this->respondNotFound(null,'Invalid credentials');
         }
@@ -73,8 +75,11 @@ class AuthController extends Controller
 
     public function forgetPassword(Request $request)
     {
+        $validated = $request->validate([
+            'phone' => 'required|numeric|exists:users,phone',
+        ]);
 
-        $user = User::where('phone', $request->validated()['phone'])->first();
+        $user = User::where('phone', $validated['phone'])->first();
 
         if ($user) {
             $this->sendWhatsAppOtp($user);
@@ -211,8 +216,6 @@ class AuthController extends Controller
         if (!$user) {
             return $this->respondNotFound(null, 'Phone not found');
         }
-
-        $user = User::where('phone', $validated['phone'])->first();
 
         if (!$user) {
             return $this->respondNotFound(null, 'Phone not found');

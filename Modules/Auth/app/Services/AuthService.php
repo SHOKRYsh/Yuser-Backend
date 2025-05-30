@@ -58,7 +58,7 @@ class AuthService
         if ($user && Hash::check($data['password'], $user->password)) {
 
             // if (!$user->otp_verified_at) {
-            //     throw new Exception('Your phone number is not verified. Please verify your OTP first.');
+            //     throw new \Exception('Your phone number is not verified. Please verify your OTP first.');
             // }
 
             $token = $user->createToken('auth_token')->plainTextToken;

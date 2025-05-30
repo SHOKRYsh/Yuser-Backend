@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Auth\Http\Controllers\AuthController;
 use Modules\Auth\Http\Controllers\UserController;
 use Modules\Auth\Http\Controllers\RoleController;
+use Spatie\Permission\Middleware\RoleMiddleware;
 
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
@@ -27,24 +28,25 @@ Route::prefix('users')->middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [UserController::class, 'showProfile']);
     Route::post('/update-profile', [UserController::class, 'updateProfile']);
     Route::post('/change-password', [UserController::class, 'changePassword']);
-    Route::delete('/{id}', [UserController::class, 'deleteUser'])->middleware('role:SuperAdmin');
+    Route::delete('/{id}', [UserController::class, 'deleteUser'])->middleware(RoleMiddleware::using('SuperAdmin'));
+    Route::get('/activities/user/{userId}', [UserController ::class, 'getUserActivities'])->middleware(RoleMiddleware::using('SuperAdmin'));
 });
 
 
 Route::prefix('roles')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [RoleController::class, 'index']);
-    Route::post('/', [RoleController::class, 'store'])->middleware('role:SuperAdmin');
+    Route::post('/', [RoleController::class, 'store'])->middleware(RoleMiddleware::using('SuperAdmin'));
     Route::get('/{id}', [RoleController::class, 'show']);
-    Route::post('/{id}/update', [RoleController::class, 'update'])->middleware('role:SuperAdmin');
-    Route::delete('/{id}', [RoleController::class, 'destroy'])->middleware('role:SuperAdmin');
+    Route::post('/{id}/update', [RoleController::class, 'update'])->middleware(RoleMiddleware::using('SuperAdmin'));
+    Route::delete('/{id}', [RoleController::class, 'destroy'])->middleware(RoleMiddleware::using('SuperAdmin'));
 
-    Route::post('/{id}/assign-permissions', [RoleController::class, 'assignPermissions'])->middleware('role:SuperAdmin');
-    Route::post('/assign-role/{userId}', [RoleController::class, 'assignRoleToUser'])->middleware('role:SuperAdmin');
+    Route::post('/{id}/assign-permissions', [RoleController::class, 'assignPermissions'])->middleware(RoleMiddleware::using('SuperAdmin'));
+    Route::post('/assign-role/{userId}', [RoleController::class, 'assignRoleToUser'])->middleware(RoleMiddleware::using('SuperAdmin'));
 });
 
 Route::get('/get-users-without-role', [RoleController::class, 'getUsersWithoutRole'])->middleware(['auth:sanctum','role:SuperAdmin']);
 
 Route::prefix('permissions')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [RoleController::class, 'getPermissions']);
-    Route::post('/', [RoleController::class, 'storePermission'])->middleware('role:SuperAdmin');
+    Route::post('/', [RoleController::class, 'storePermission'])->middleware(RoleMiddleware::using('SuperAdmin'));
 });
