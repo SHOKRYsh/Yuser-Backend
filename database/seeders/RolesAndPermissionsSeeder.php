@@ -23,6 +23,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage users',
             'view reports',
             'access settings',
+            'view own transactions',
+            'upload documents',
+            'view status updates',
+            'send inquiries'
         ];
 
         foreach ($permissions as $permission) {
@@ -39,7 +43,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'Legal Supervisor'          => ['manage documents'],
             'Quality Assurance Officer' => ['view reports'],
             'Bank Liaison Officer'      => ['manage transactions'],
-            'SuperAdmin' => Permission::pluck('name')->toArray(),
+            'SuperAdmin'                => Permission::pluck('name')->toArray(),
+            'Client'                    =>['view own transactions','upload documents','view status updates','send inquiries']
         ];
 
         foreach ($roles as $role => $perms) {
