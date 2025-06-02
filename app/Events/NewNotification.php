@@ -23,8 +23,7 @@ class NewNotification implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        // return new Channel('notifications');
-        return ['notifications'];
+        return new Channel('notifications.'.$this->userId);
     }
 
     public function broadcastAs()
