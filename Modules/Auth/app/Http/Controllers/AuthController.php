@@ -29,7 +29,7 @@ class AuthController extends Controller
         $user = $this->authService->register($data);
         if($user)
         {
-            $this->sendWhatsAppOtp($user);
+            $this->sendWhatsAppOtp($user['user']);
             return $this->respondCreated($user,'User registered successfully');
         }
         else
@@ -43,10 +43,10 @@ class AuthController extends Controller
         $user = $this->authService->login($data);
         if($user)
         {
-            activity()->causedBy($user['user'])->useLog('auth')->log('User logged in'); 
+            activity()->causedBy($user['user'])->useLog('auth')->log('User logged in');
             return $this->respondOk($user,'User logged in successfully');
         }
-        else    
+        else
         {
             return $this->respondNotFound(null,'Invalid credentials');
         }

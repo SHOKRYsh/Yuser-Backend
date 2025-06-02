@@ -1,5 +1,6 @@
 {
     "Auth": true,
     "Client": true,
-    "Transaction": true
+    "Transaction": true,
+    "Chat": true
 }
