@@ -17,7 +17,7 @@ class NotificationController extends Controller
         $userId = $request->input('user_id');
         $message = $request->input('message');
 
-        broadcast(new NewNotification($message, $userId));
+        event(new NewNotification($message, $userId));
 
         return $this->respondOk(null, 'Notification sent successfully');
     }
