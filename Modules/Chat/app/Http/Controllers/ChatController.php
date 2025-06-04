@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Chat\Events\NewMessage;
 use Modules\Chat\Models\Chat;
+use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
@@ -26,6 +27,15 @@ class ChatController extends Controller
             $request->input('sender_id'),
             $request->input('receiver_id')
         ));
+
+        activity()
+            ->causedBy(Auth::user())
+            ->useLog('message')
+            ->withProperties([
+                'user_id' => $request->input('receiver_id'),
+                'message' => $request->input('message'),
+            ])
+            ->log('message sent');
 
         return $this->respondOk(null, 'Message sent successfully');
     }

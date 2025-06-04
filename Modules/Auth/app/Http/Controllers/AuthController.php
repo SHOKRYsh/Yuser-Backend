@@ -43,7 +43,7 @@ class AuthController extends Controller
         $user = $this->authService->login($data);
         if($user)
         {
-            activity()->causedBy($user['user'])->useLog('auth')->log('User logged in');
+            // activity()->causedBy($user['user'])->useLog('auth')->log('User logged in');
             return $this->respondOk($user,'User logged in successfully');
         }
         else

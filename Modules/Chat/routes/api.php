@@ -9,3 +9,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/send-message', [ChatController::class, 'sendMessage']);
     Route::get('/messages/sender/{senderId}/receiver/{receiverId}', [ChatController::class, 'getMessages']);
 });
+
+

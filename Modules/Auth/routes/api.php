@@ -29,7 +29,9 @@ Route::prefix('users')->middleware('auth:sanctum')->group(function () {
     Route::post('/update-profile', [UserController::class, 'updateProfile']);
     Route::post('/change-password', [UserController::class, 'changePassword']);
     Route::delete('/{id}', [UserController::class, 'deleteUser'])->middleware(RoleMiddleware::using('SuperAdmin'));
-    Route::get('/activities/user/{userId}', [UserController ::class, 'getUserActivities'])->middleware(RoleMiddleware::using('SuperAdmin'));
+
+    Route::get('/activity-logs', [UserController::class, 'getAllActivities']);
+
 });
 
 

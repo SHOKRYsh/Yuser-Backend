@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\NewNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
@@ -19,6 +20,16 @@ class NotificationController extends Controller
 
         event(new NewNotification($message, $userId));
 
+        $user=Auth::user();
+
+        activity()
+            ->causedBy($user)
+            ->useLog('notification')
+            ->withProperties([
+                'user_id' => $userId,
+                'message' => $message,
+            ])
+            ->log('Notification sent');
         return $this->respondOk(null, 'Notification sent successfully');
     }
 }

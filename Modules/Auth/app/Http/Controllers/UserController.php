@@ -77,12 +77,36 @@ class UserController extends Controller
         return $this->respondOk(null, 'User deleted successfully');
     }
 
-    public function getUserActivities($userId)
+    public function getAllActivities(Request $request)
     {
-        $activities = Activity::where('causer_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->paginate();
+        $query = Activity::query();
 
-        return $this->respondOk($activities);
+        if ($request->filled('log_name')) {
+            $query->where('log_name', $request->log_name);
+        }
+
+        if ($request->filled('causer_id')) {
+            $query->where('causer_id', $request->causer_id);
+        }
+
+        if ($request->filled('search')) {
+            $query->where('description', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('from')) {
+            $query->whereDate('created_at', '>=', $request->from);
+        }
+
+        if ($request->filled('to')) {
+            $query->whereDate('created_at', '<=', $request->to);
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('properties->user_id', $request->user_id);
+        }
+
+        $logs = $query->orderBy('created_at', 'desc')->paginate(20);
+
+        return $this->respondOk($logs, 'logs retrieved successfully');
     }
 }
