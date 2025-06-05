@@ -11,10 +11,32 @@ use Spatie\Activitylog\Models\Activity;
 
 class UserController extends Controller
 {
-    public function getAllUsers()
+
+    public function getAllUsers(Request $request)
     {
-        return $this->respondOk(User::with('roles')->paginate());
+        $query = User::with('roles');
+
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('email')) {
+            $query->where('email', 'like', '%' . $request->email . '%');
+        }
+
+        if ($request->filled('phone')) {
+            $query->where('phone', 'like', '%' . $request->phone . '%');
+        }
+
+        if ($request->filled('role')) {
+            $query->whereHas('roles', function ($q) use ($request) {
+                $q->where('name', $request->role);
+            });
+        }
+
+        return $this->respondOk($query->paginate());
     }
+
 
     public function showProfile()
     {

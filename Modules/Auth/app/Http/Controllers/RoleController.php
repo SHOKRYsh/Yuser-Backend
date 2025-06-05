@@ -118,12 +118,11 @@ class RoleController extends Controller
         ]);
 
         $user = User::find($userId);
-
         if (!$user) {
             return $this->respondNotFound(null,'User not found');
         }
 
-        $role = Role::findByName($request->role);
+        $role = Role::findByName($request->role, 'web');
 
         if (!$role) {
             return $this->respondNotFound(null,'Role not found');
